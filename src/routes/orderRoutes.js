@@ -14,13 +14,7 @@ const {
 router.post('/orders', authMiddleware, createOrder);
 router.get('/orders/my', authMiddleware, getMyOrders);
 router.get('/shops/:shopId/orders', authMiddleware, getOrdersByShop);
-router.post(
-  '/orders/:orderId/pay',
-  authMiddleware,
-  confirmPayment
-);
+router.post('/orders/:orderId/pay', authMiddleware,confirmPayment);
 router.get('/orders/:orderId', authMiddleware, getOrderById);
-
-
 
 module.exports = router;
