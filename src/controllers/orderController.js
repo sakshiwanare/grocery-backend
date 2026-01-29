@@ -83,4 +83,23 @@ exports.confirmPayment = async (req, res) => {
     res.status(500).json({ message: 'Payment failed' });
   }
 };
+// GET /api/orders/:orderId
+exports.getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId)
+      .populate('shop', 'name area')
+      .populate('items.item', 'name pricePerKg');
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch order details' });
+  }
+};
+
 
