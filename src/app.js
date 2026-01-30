@@ -6,6 +6,7 @@ const itemRoutes = require('./routes/itemRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const cors = require('cors');
+const addressRoutes = require('./routes/addressRoutes');
 
 
 // Load env variables
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api', itemRoutes);
 app.use('/api', orderRoutes);
+app.use('/api', addressRoutes);
 
 
 // Health check
