@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
-
-const {
-  saveAddress,
-  getAddresses,
-} = require('../controllers/addressController');
-
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/', authMiddleware, saveAddress);
-router.get('/', authMiddleware, getAddresses);
+const {
+  addAddress,
+  getMyAddresses,
+} = require('../controllers/addressController');
+
+router.post('/address', authMiddleware, addAddress);
+router.get('/address', authMiddleware, getMyAddresses);
 
 module.exports = router;
