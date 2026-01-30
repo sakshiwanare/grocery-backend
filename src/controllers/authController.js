@@ -76,10 +76,18 @@ exports.loginUser = async (req, res) => {
 }
 exports.getProfile = async (req, res) => {
   try {
-    res.json(req.user);
+    const user = await User.findById(req.user.id).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Failed to load profile' });
   }
 };
+
+
 
 
