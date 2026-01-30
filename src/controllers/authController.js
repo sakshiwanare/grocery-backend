@@ -87,6 +87,49 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: 'Failed to load profile' });
   }
 };
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: 'All fields are required' });
+    }
+
+    // get logged-in user
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // check old password
+    const isMatch = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ message: 'Current password is incorrect' });
+    }
+
+    // hash new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await user.save();
+
+    res.json({
+      message: 'Password updated successfully',
+    });
+  } catch (error) {
+    console.error('CHANGE PASSWORD ERROR:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 
 
