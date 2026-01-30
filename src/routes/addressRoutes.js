@@ -1,33 +1,14 @@
-const Address = require('../models/Address');
+const express = require('express');
+const router = express.Router();
 
-// POST /api/address
-exports.addAddress = async (req, res) => {
-  try {
-    const { house, area, city, pincode } = req.body;
+const {
+  saveAddress,
+  getAddresses,
+} = require('../controllers/addressController');
 
-    const address = await Address.create({
-      user: req.user.id,
-      house,
-      area,
-      city,
-      pincode,
-    });
+const authMiddleware = require('../middleware/authMiddleware');
 
-    res.status(201).json(address);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to save address' });
-  }
-};
+router.post('/', authMiddleware, saveAddress);
+router.get('/', authMiddleware, getAddresses);
 
-// GET /api/address
-exports.getMyAddresses = async (req, res) => {
-  try {
-    const addresses = await Address.find({
-      user: req.user.id,
-    }).sort({ createdAt: -1 });
-
-    res.json(addresses);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to load addresses' });
-  }
-};
+module.exports = router;
