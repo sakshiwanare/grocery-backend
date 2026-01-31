@@ -1,6 +1,5 @@
 const Address = require('../models/Address');
 
-// POST /api/address
 exports.addAddress = async (req, res) => {
   try {
     const { house, area, city, pincode } = req.body;
@@ -19,7 +18,6 @@ exports.addAddress = async (req, res) => {
   }
 };
 
-// GET /api/address
 exports.getMyAddresses = async (req, res) => {
   try {
     const addresses = await Address.find({

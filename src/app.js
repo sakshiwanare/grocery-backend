@@ -27,7 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api', itemRoutes);
 app.use('/api', orderRoutes);
-app.use('/api/address', addressRoutes);
+app.use('/api/address', addressRoutes)
 
 
 // Health check
