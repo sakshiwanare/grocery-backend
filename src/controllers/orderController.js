@@ -101,5 +101,34 @@ exports.getOrderById = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch order details' });
   }
 };
+exports.cancelOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
 
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Only allow cancel if pending
+    if (order.status.toLowerCase() !== 'pending') {
+      return res.status(400).json({
+        message: 'Order cannot be cancelled at this stage',
+      });
+    }
+
+    order.status = 'cancelled';
+    await order.save();
+
+    res.status(200).json({
+      message: 'Order cancelled successfully',
+      order,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 

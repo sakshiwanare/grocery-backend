@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const { getOrderById } = require('../controllers/orderController');
+const { cancelOrder } = require('../controllers/orderController');
 
 
 const {
@@ -16,5 +17,6 @@ router.get('/orders/my', authMiddleware, getMyOrders);
 router.get('/shops/:shopId/orders', authMiddleware, getOrdersByShop);
 router.post('/orders/:orderId/pay', authMiddleware,confirmPayment);
 router.get('/orders/:orderId', authMiddleware, getOrderById);
+router.put('/:id/cancel', cancelOrder);
 
 module.exports = router;
