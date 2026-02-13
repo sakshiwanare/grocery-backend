@@ -110,9 +110,11 @@ exports.cancelOrder = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-
-    // Only allow cancel if pending
-    if (order.status.toLowerCase() !== 'pending') {
+    
+    console.log("Order status from DB:", order.status);
+    // Only allow cancel if pending or placed
+    const status = order.status.toLowerCase();
+    if (status !== 'pending' && status !== 'placed') {
       return res.status(400).json({
         message: 'Order cannot be cancelled at this stage',
       });
