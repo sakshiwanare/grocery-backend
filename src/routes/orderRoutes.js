@@ -1,20 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const { getOrderById } = require('../controllers/orderController');
-const { cancelOrder } = require('../controllers/orderController');
 
 const {
   createOrder,
   getMyOrders,
   getOrdersByShop,
   confirmPayment,
+  getOrderById,
+  cancelOrder,
 } = require('../controllers/orderController');
 
-router.post('/orders', authMiddleware, createOrder);
-router.get('/orders/my', authMiddleware, getMyOrders);
-router.get('/shops/:shopId/orders', authMiddleware, getOrdersByShop);
-router.post('/orders/:orderId/pay', authMiddleware,confirmPayment);
+// CREATE ORDER
+// POST /api/orders
+router.post('/', authMiddleware, createOrder);
+
+// GET MY ORDERS
+// GET /api/orders/my
+router.get('/my', authMiddleware, getMyOrders);
+
+// GET ORDERS BY SHOP
+// GET /api/orders/shop/:shopId
+router.get('/shop/:shopId', authMiddleware, getOrdersByShop);
+
+// CONFIRM PAYMENT
+// POST /api/orders/:orderId/pay
+router.post('/:orderId/pay', authMiddleware, confirmPayment);
+
+// GET ORDER BY ID
+// GET /api/orders/:orderId
 router.get('/:orderId', authMiddleware, getOrderById);
-router.put('/:id/cancel', cancelOrder);
+
+// CANCEL ORDER
+// PUT /api/orders/:orderId/cancel
+router.put('/:orderId/cancel', authMiddleware, cancelOrder);
+
 module.exports = router;
