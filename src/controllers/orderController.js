@@ -138,10 +138,9 @@ exports.getOrderById = async (req, res) => {
 // };
 exports.cancelOrder = async (req, res) => {
   try {
-    // 🔴 ADD THIS LINE
     console.log('CANCEL PARAMS:', req.params);
 
-    const orderId = req.params.orderId; // this line must already be fixed
+    const orderId = req.params.orderId;
 
     const order = await Order.findById(orderId);
 
@@ -149,21 +148,21 @@ exports.cancelOrder = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    const status = order.status.toLowerCase();
-    if (status !== 'pending' && status !== 'placed') {
+    // ✅ enum-safe check
+    if (order.status !== 'PENDING') {
       return res.status(400).json({
         message: 'Order cannot be cancelled at this stage',
       });
     }
 
-    order.status = 'cancelled';
+    // ✅ enum-safe assignment
+    order.status = 'CANCELLED';
     await order.save();
 
     res.status(200).json({
       message: 'Order cancelled successfully',
       order,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
