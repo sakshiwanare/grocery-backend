@@ -101,18 +101,54 @@ exports.getOrderById = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch order details' });
   }
 };
+// exports.cancelOrder = async (req, res) => {
+//   try {
+//     console.log('CANCEL PARAMS:', req.params);
+//     const orderId = req.params.orderId;// ✅ FIXED
+//     const params = useLocalSearchParams();
+//     const orderId =
+//       Array.isArray(params.orderId)
+//         ? params.orderId[0]
+//         : params.orderId;
+//     const order = await Order.findById(orderId);
+
+//     if (!order) {
+//       return res.status(404).json({ message: 'Order not found' });
+//     }
+
+//     const status = order.status.toLowerCase();
+//     if (status !== 'pending' && status !== 'placed') {
+//       return res.status(400).json({
+//         message: 'Order cannot be cancelled at this stage',
+//       });
+//     }
+
+//     order.status = 'cancelled';
+//     await order.save();
+
+//     res.status(200).json({
+//       message: 'Order cancelled successfully',
+//       order,
+//     });
+
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
 exports.cancelOrder = async (req, res) => {
   try {
-    const orderId = req.params.id;
+    // 🔴 ADD THIS LINE
+    console.log('CANCEL PARAMS:', req.params);
+
+    const orderId = req.params.orderId; // this line must already be fixed
 
     const order = await Order.findById(orderId);
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-    
-    console.log("Order status from DB:", order.status);
-    // Only allow cancel if pending or placed
+
     const status = order.status.toLowerCase();
     if (status !== 'pending' && status !== 'placed') {
       return res.status(400).json({
