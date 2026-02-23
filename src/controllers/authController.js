@@ -101,6 +101,12 @@ exports.changePassword = async (req, res) => {
     // get logged-in user
     const user = await User.findById(req.user.id);
 
+    console.log('LOGIN USER FROM DB:', {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
