@@ -17,5 +17,7 @@ router.get('/shop/:shopId', authMiddleware, getOrdersByShop);
 router.post('/:orderId/pay', authMiddleware, confirmPayment);
 router.get('/:orderId', authMiddleware, getOrderById);
 router.put('/:orderId/cancel', authMiddleware, cancelOrder);
+router.put('/:orderId/accept', authMiddleware, acceptOrder);
+router.put('/:orderId/reject', authMiddleware, rejectOrder);
 
 module.exports = router;

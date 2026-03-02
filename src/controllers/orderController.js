@@ -93,6 +93,8 @@ exports.getOrderById = async (req, res) => {
       .populate('items.item', 'name pricePerKg')
       .populate('user', 'name email');
 
+      console.log('ORDER USER FIELD:', order.user);
+
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
@@ -168,5 +170,34 @@ exports.cancelOrder = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
+};
+exports.acceptOrder = async (req, res) => {
+  const order = await Order.findById(req.params.orderId);
+
+  if (!order) return res.status(404).json({ message: 'Order not found' });
+
+  if (order.status !== 'PENDING') {
+    return res.status(400).json({ message: 'Order cannot be accepted' });
+  }
+
+  order.status = 'ACCEPTED';
+  await order.save();
+
+  res.json(order);
+};
+
+exports.rejectOrder = async (req, res) => {
+  const order = await Order.findById(req.params.orderId);
+
+  if (!order) return res.status(404).json({ message: 'Order not found' });
+
+  if (order.status !== 'PENDING') {
+    return res.status(400).json({ message: 'Order cannot be rejected' });
+  }
+
+  order.status = 'CANCELLED';
+  await order.save();
+
+  res.json(order);
 };
 
