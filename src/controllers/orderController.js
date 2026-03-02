@@ -172,32 +172,44 @@ exports.cancelOrder = async (req, res) => {
   }
 };
 exports.acceptOrder = async (req, res) => {
-  const order = await Order.findById(req.params.orderId);
+  try {
+    const order = await Order.findById(req.params.orderId);
 
-  if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
-  if (order.status !== 'PENDING') {
-    return res.status(400).json({ message: 'Order cannot be accepted' });
+    if (order.status !== 'PENDING') {
+      return res.status(400).json({ message: 'Order cannot be accepted' });
+    }
+
+    order.status = 'ACCEPTED';
+    await order.save();
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to accept order' });
   }
-
-  order.status = 'ACCEPTED';
-  await order.save();
-
-  res.json(order);
 };
 
 exports.rejectOrder = async (req, res) => {
-  const order = await Order.findById(req.params.orderId);
+  try {
+    const order = await Order.findById(req.params.orderId);
 
-  if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
-  if (order.status !== 'PENDING') {
-    return res.status(400).json({ message: 'Order cannot be rejected' });
+    if (order.status !== 'PENDING') {
+      return res.status(400).json({ message: 'Order cannot be rejected' });
+    }
+
+    order.status = 'CANCELLED';
+    await order.save();
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to reject order' });
   }
-
-  order.status = 'CANCELLED';
-  await order.save();
-
-  res.json(order);
 };
 

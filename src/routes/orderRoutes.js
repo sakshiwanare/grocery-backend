@@ -9,6 +9,8 @@ const {
   confirmPayment,
   getOrderById,
   cancelOrder,
+  acceptOrder,   
+  rejectOrder,
 } = require('../controllers/orderController');
 
 router.post('/', authMiddleware, createOrder);
