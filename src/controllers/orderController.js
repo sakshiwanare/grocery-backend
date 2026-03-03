@@ -213,3 +213,49 @@ exports.rejectOrder = async (req, res) => {
   }
 };
 
+exports.markOutForDelivery = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (order.status !== 'ACCEPTED') {
+      return res.status(400).json({
+        message: 'Only accepted orders can be sent out for delivery',
+      });
+    }
+
+    order.status = 'OUT_FOR_DELIVERY';
+    await order.save();
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update order' });
+  }
+};
+
+exports.markDelivered = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (order.status !== 'OUT_FOR_DELIVERY') {
+      return res.status(400).json({
+        message: 'Order must be out for delivery first',
+      });
+    }
+
+    order.status = 'DELIVERED';
+    await order.save();
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update order' });
+  }
+};
+

@@ -11,6 +11,8 @@ const {
   cancelOrder,
   acceptOrder,   
   rejectOrder,
+  markOutForDelivery,
+  markDelivered
 } = require('../controllers/orderController');
 
 router.post('/', authMiddleware, createOrder);
@@ -21,5 +23,7 @@ router.get('/:orderId', authMiddleware, getOrderById);
 router.put('/:orderId/cancel', authMiddleware, cancelOrder);
 router.put('/:orderId/accept', authMiddleware, acceptOrder);
 router.put('/:orderId/reject', authMiddleware, rejectOrder);
+router.put('/:orderId/out-for-delivery', authMiddleware, markOutForDelivery);
+router.put('/:orderId/delivered', authMiddleware, markDelivered);
 
 module.exports = router;
