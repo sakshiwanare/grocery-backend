@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
 const {
   getItemsByShop,
   addItem,
   getAllItemsByShop,
   toggleStock,
+  deleteItem,
 } = require('../controllers/itemController');
 
 // 🟢 CUSTOMER APP (UNCHANGED)
