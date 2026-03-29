@@ -69,6 +69,7 @@ exports.toggleStock = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Failed to update item' });
   }
+};
   // Delete item
   exports.deleteItem = async (req, res) => {
   try {
@@ -80,5 +81,4 @@ exports.toggleStock = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete item' });
   }
-};
 };
