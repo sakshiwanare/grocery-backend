@@ -82,3 +82,24 @@ exports.toggleStock = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete item' });
   }
 };
+// 🆕 UPDATE ITEM (PRICE ONLY)
+exports.updateItem = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const { pricePerKg } = req.body;
+
+    if (!pricePerKg) {
+      return res.status(400).json({ message: 'Price is required' });
+    }
+
+    const updatedItem = await Item.findByIdAndUpdate(
+      itemId,
+      { pricePerKg },
+      { new: true }
+    );
+
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update item' });
+  }
+};

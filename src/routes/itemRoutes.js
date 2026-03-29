@@ -6,6 +6,7 @@ const {
   getAllItemsByShop,
   toggleStock,
   deleteItem,
+  updateItem,
 } = require('../controllers/itemController');
 
 // 🟢 CUSTOMER APP (UNCHANGED)
@@ -16,6 +17,7 @@ router.post('/items', addItem);
 router.get('/items/:shopId', getAllItemsByShop);
 router.put('/items/:id/toggle', toggleStock);
 router.delete('/items/:itemId', deleteItem);
+router.put('/items/:itemId', updateItem);
 console.log(deleteItem);
 
 module.exports = router;
