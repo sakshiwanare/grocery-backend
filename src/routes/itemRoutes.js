@@ -15,5 +15,6 @@ router.get('/shops/:shopId/items', getItemsByShop);
 router.post('/items', addItem);
 router.get('/items/:shopId', getAllItemsByShop);
 router.put('/items/:id/toggle', toggleStock);
+router.delete('/items/:itemId', deleteItem);
 
 module.exports = router;
