@@ -1,6 +1,6 @@
 const Item = require('../models/Item');
 
-// GET /api/shops/:shopId/items
+// GET /api/shops/:shopId/items (ONLY AVAILABLE ITEMS - CUSTOMER APP)
 exports.getItemsByShop = async (req, res) => {
   try {
     const { shopId } = req.params;
@@ -19,9 +19,10 @@ exports.getItemsByShop = async (req, res) => {
 // ➕ ADD ITEM (SHOP APP)
 exports.addItem = async (req, res) => {
   try {
-    const { name, pricePerKg, shopId } = req.body;
+    const { name, pricePerKg, shopId, quantity } = req.body;
 
-    if (!name || !pricePerKg || !shopId) {
+    // ✅ updated validation
+    if (!name || !pricePerKg || !shopId || quantity === undefined) {
       return res.status(400).json({ message: 'All fields required' });
     }
 
@@ -29,6 +30,7 @@ exports.addItem = async (req, res) => {
       name,
       pricePerKg,
       shop: shopId,
+      quantity, // ✅ NEW
     });
 
     res.status(201).json(item);
@@ -70,8 +72,9 @@ exports.toggleStock = async (req, res) => {
     res.status(500).json({ message: 'Failed to update item' });
   }
 };
-  // Delete item
-  exports.deleteItem = async (req, res) => {
+
+// ❌ DELETE ITEM
+exports.deleteItem = async (req, res) => {
   try {
     const { itemId } = req.params;
 
@@ -82,19 +85,28 @@ exports.toggleStock = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete item' });
   }
 };
-// 🆕 UPDATE ITEM (PRICE ONLY)
+
+// ✏️ UPDATE ITEM (PRICE + QUANTITY)
 exports.updateItem = async (req, res) => {
   try {
     const { itemId } = req.params;
-    const { pricePerKg } = req.body;
+    const { pricePerKg, quantity } = req.body;
 
-    if (!pricePerKg) {
-      return res.status(400).json({ message: 'Price is required' });
+    // ✅ at least one field required
+    if (pricePerKg === undefined && quantity === undefined) {
+      return res.status(400).json({
+        message: 'Price or Quantity required',
+      });
     }
+
+    const updateData = {};
+
+    if (pricePerKg !== undefined) updateData.pricePerKg = pricePerKg;
+    if (quantity !== undefined) updateData.quantity = quantity;
 
     const updatedItem = await Item.findByIdAndUpdate(
       itemId,
-      { pricePerKg },
+      updateData,
       { new: true }
     );
 
