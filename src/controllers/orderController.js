@@ -188,7 +188,6 @@ exports.acceptOrder = async (req, res) => {
 
     res.json(order);
 
-    const Item = require('../models/Item');
       for (const orderItem of order.items) {
         const item = await Item.findById(orderItem.item);
 
