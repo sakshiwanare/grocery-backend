@@ -187,6 +187,25 @@ exports.acceptOrder = async (req, res) => {
     await order.save();
 
     res.json(order);
+
+    const Item = require('../models/Item');
+      for (const orderItem of order.items) {
+        const item = await Item.findById(orderItem.item);
+
+        if (item) {
+          item.quantity -= orderItem.quantity;
+
+          // prevent negative
+          if (item.quantity < 0) item.quantity = 0;
+
+          // auto mark out of stock
+          if (item.quantity === 0) {
+            item.isAvailable = false;
+          }
+
+          await item.save();
+        }
+      }
   } catch (error) {
     res.status(500).json({ message: 'Failed to accept order' });
   }
