@@ -196,7 +196,8 @@ exports.acceptOrder = async (req, res) => {
       if (item) {
         console.log('BEFORE:', item.name, item.quantity);
 
-        item.quantity -= orderItem.quantity;
+        const orderedQtyInKg = orderItem.quantity / 1000; // convert grams → kg
+        item.quantity -= orderedQtyInKg;
 
         if (item.quantity < 0) item.quantity = 0;
 
