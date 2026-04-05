@@ -7,7 +7,7 @@ exports.getItemsByShop = async (req, res) => {
 
     const items = await Item.find({
       shop: shopId,
-      isAvailable: true,
+      // isAvailable: true,//
     });
 
     res.json(items);
@@ -104,25 +104,30 @@ exports.updateItem = async (req, res) => {
     const { itemId } = req.params;
     const { pricePerKg, quantity } = req.body;
 
-    // ✅ at least one field required
-    if (pricePerKg === undefined && quantity === undefined) {
-      return res.status(400).json({
-        message: 'Price or Quantity required',
-      });
+    const item = await Item.findById(itemId);
+
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
     }
 
-    const updateData = {};
+    if (pricePerKg !== undefined) {
+      item.pricePerKg = pricePerKg;
+    }
 
-    if (pricePerKg !== undefined) updateData.pricePerKg = pricePerKg;
-    if (quantity !== undefined) updateData.quantity = quantity;
+    if (quantity !== undefined) {
+      item.quantity = quantity;
 
-    const updatedItem = await Item.findByIdAndUpdate(
-      itemId,
-      updateData,
-      { new: true }
-    );
+      // 🔥 AUTO STOCK CONTROL
+      if (quantity === 0) {
+        item.isAvailable = false;
+      } else {
+        item.isAvailable = true;
+      }
+    }
 
-    res.json(updatedItem);
+    await item.save();
+
+    res.json(item);
   } catch (error) {
     res.status(500).json({ message: 'Failed to update item' });
   }
