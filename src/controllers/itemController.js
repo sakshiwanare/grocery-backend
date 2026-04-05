@@ -64,7 +64,19 @@ exports.toggleStock = async (req, res) => {
       return res.status(404).json({ message: 'Item not found' });
     }
 
+    // ❌ If no quantity → force out of stock
+    if (item.quantity === 0) {
+      item.isAvailable = false;
+
+      return res.json({
+        message: 'Item is out of stock (quantity is 0)',
+        item,
+      });
+    }
+
+    // ✅ Only toggle if quantity > 0
     item.isAvailable = !item.isAvailable;
+
     await item.save();
 
     res.json(item);
