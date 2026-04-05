@@ -171,6 +171,8 @@ exports.cancelOrder = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const Item = require('../models/Item'); // ✅ ADD THIS
+
 exports.acceptOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId);
@@ -183,29 +185,42 @@ exports.acceptOrder = async (req, res) => {
       return res.status(400).json({ message: 'Order cannot be accepted' });
     }
 
+    // ✅ UPDATE STATUS FIRST
     order.status = 'ACCEPTED';
     await order.save();
 
-    res.json(order);
+    // 🔥 STOCK UPDATE LOGIC (MOVE BEFORE res.json)
+    for (const orderItem of order.items) {
+      const item = await Item.findById(orderItem.item);
 
-      for (const orderItem of order.items) {
-        const item = await Item.findById(orderItem.item);
+      if (item) {
+        console.log('BEFORE:', item.name, item.quantity);
 
-        if (item) {
-          item.quantity -= orderItem.quantity;
+        item.quantity -= orderItem.quantity;
 
-          // prevent negative
-          if (item.quantity < 0) item.quantity = 0;
+        if (item.quantity < 0) item.quantity = 0;
 
-          // auto mark out of stock
-          if (item.quantity === 0) {
-            item.isAvailable = false;
-          }
-
-          await item.save();
+        // ✅ FIXED LOGIC
+        if (item.quantity === 0) {
+          item.isAvailable = false;
+        } else {
+          item.isAvailable = true;
         }
+
+        await item.save();
+
+        console.log('AFTER:', item.name, item.quantity);
       }
+    }
+
+    // ✅ SEND RESPONSE AT END
+    res.json({
+      message: 'Order accepted & stock updated',
+      order,
+    });
+
   } catch (error) {
+    console.error('ACCEPT ERROR:', error);
     res.status(500).json({ message: 'Failed to accept order' });
   }
 };
