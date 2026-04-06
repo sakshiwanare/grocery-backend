@@ -7,6 +7,7 @@ const {
   toggleStock,
   deleteItem,
   updateItem,
+  validateCart,
 } = require('../controllers/itemController');
 
 // 🟢 CUSTOMER APP (UNCHANGED)
