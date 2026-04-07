@@ -156,6 +156,8 @@ exports.validateCart = async (req, res) => {
           message: `${cartItem.name} stock changed`,
         });
       }
+    console.log('DB quantity:', dbItem.quantity);
+    console.log('Cart quantity:', cartItem.quantity);
     }
 
     res.json({ message: 'Stock valid' });
