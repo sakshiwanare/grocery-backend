@@ -136,29 +136,22 @@ exports.updateItem = async (req, res) => {
 exports.validateCart = async (req, res) => {
   try {
     const { items } = req.body;
+    console.log('REQ BODY:', req.body);
 
     for (const cartItem of items) {
-      const itemId = cartItem.id || cartItem._id;
-
-      const dbItem = await Item.findById(itemId);
+      const dbItem = await Item.findById(cartItem.itemId);
 
       if (!dbItem) {
         return res.status(400).json({
-          message: `${cartItem.name} not found`,
+          message: `Item not found`,
         });
       }
 
-      let availableStock;
-
-      if (dbItem.quantity <= 10) {
-        availableStock = dbItem.quantity * 1000;
-      } else {
-        availableStock = dbItem.quantity;
-      }
+      const availableStock = dbItem.quantity * 1000;
 
       if (cartItem.quantity > availableStock) {
         return res.status(400).json({
-          message: `${cartItem.name} stock changed`,
+          message: `${dbItem.name} stock changed`,
         });
       }
     }
