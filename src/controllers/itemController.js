@@ -138,7 +138,6 @@ exports.validateCart = async (req, res) => {
     const { items } = req.body;
 
     for (const cartItem of items) {
-      // ✅ support both id and _id
       const itemId = cartItem.id || cartItem._id;
 
       const dbItem = await Item.findById(itemId);
@@ -149,15 +148,19 @@ exports.validateCart = async (req, res) => {
         });
       }
 
-      const availableStock = dbItem.quantity * 1000;
+      let availableStock;
+
+      if (dbItem.quantity <= 10) {
+        availableStock = dbItem.quantity * 1000;
+      } else {
+        availableStock = dbItem.quantity;
+      }
 
       if (cartItem.quantity > availableStock) {
         return res.status(400).json({
           message: `${cartItem.name} stock changed`,
         });
       }
-    console.log('DB quantity:', dbItem.quantity);
-    console.log('Cart quantity:', cartItem.quantity);
     }
 
     res.json({ message: 'Stock valid' });
