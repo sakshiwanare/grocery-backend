@@ -136,10 +136,14 @@ exports.updateItem = async (req, res) => {
 exports.validateCart = async (req, res) => {
   try {
     const { items } = req.body;
-    console.log('REQ BODY:', req.body);
 
     for (const cartItem of items) {
-      const dbItem = await Item.findById(cartItem.itemId);
+      const dbItem = await Item.findById(cartItem.id);
+
+      console.log('--- VALIDATION ---');
+      console.log('Item:', dbItem?.name);
+      console.log('DB Qty:', dbItem?.quantity);
+      console.log('Cart Qty:', cartItem.quantity);
 
       if (!dbItem) {
         return res.status(400).json({
@@ -149,15 +153,18 @@ exports.validateCart = async (req, res) => {
 
       const availableStock = dbItem.quantity * 1000;
 
+      console.log('Available:', availableStock);
+
       if (cartItem.quantity > availableStock) {
         return res.status(400).json({
-          message: `${dbItem.name} stock changed`,
+          message: `${dbItem.name} failed validation`,
         });
       }
     }
 
     res.json({ message: 'Stock valid' });
   } catch (error) {
+    console.log('VALIDATION ERROR:', error);
     res.status(500).json({ message: 'Validation failed' });
   }
 };
