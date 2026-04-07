@@ -146,7 +146,7 @@ exports.validateCart = async (req, res) => {
       console.log('--- ITEM CHECK ---');
       console.log('CART ITEM:', cartItem);
 
-      const itemId = cartItem.id || cartItem._id;
+      const itemId = cartItem.itemId || cartItem.id || cartItem._id;
 
       console.log('TRYING ID:', itemId);
 
