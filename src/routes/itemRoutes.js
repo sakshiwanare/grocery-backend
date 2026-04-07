@@ -19,7 +19,7 @@ router.get('/items/:shopId', getAllItemsByShop);
 router.put('/items/:id/toggle', toggleStock);
 router.delete('/items/:itemId', deleteItem);
 router.put('/items/:itemId', updateItem);
-router.post('/validate-cart', validateCart);
+router.post('/items/validate-cart', validateCart);
 
 console.log(deleteItem);
 
