@@ -138,13 +138,13 @@ exports.validateCart = async (req, res) => {
     const { items } = req.body;
 
     for (const cartItem of items) {
-      const dbItem = await Item.findById(cartItem.id);
+      console.log('CART ITEM:', cartItem);
+      console.log('TRYING ID:', cartItem.id);
 
-      console.log('--- VALIDATION ---');
-      console.log('Item:', dbItem?.name);
-      console.log('DB Qty:', dbItem?.quantity);
-      console.log('Cart Qty:', cartItem.quantity);
+      const dbItem = await Item.findById(cartItem.id || cartItem._id);
 
+      console.log('DB ITEM FOUND:', dbItem);
+            
       if (!dbItem) {
         return res.status(400).json({
           message: `Item not found`,
