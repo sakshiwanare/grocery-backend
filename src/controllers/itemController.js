@@ -132,12 +132,16 @@ exports.updateItem = async (req, res) => {
     res.status(500).json({ message: 'Failed to update item' });
   }
 };
+
 exports.validateCart = async (req, res) => {
   try {
     const { items } = req.body;
 
     for (const cartItem of items) {
-      const dbItem = await Item.findById(cartItem.id);
+      // ✅ support both id and _id
+      const itemId = cartItem.id || cartItem._id;
+
+      const dbItem = await Item.findById(itemId);
 
       if (!dbItem) {
         return res.status(400).json({
@@ -145,11 +149,11 @@ exports.validateCart = async (req, res) => {
         });
       }
 
-      const availableStock = dbItem.quantity * 1000; // kg → grams
+      const availableStock = dbItem.quantity * 1000;
 
       if (cartItem.quantity > availableStock) {
         return res.status(400).json({
-          message: `${cartItem.name} is out of stock or reduced`,
+          message: `${cartItem.name} stock changed`,
         });
       }
     }
