@@ -133,38 +133,55 @@ exports.updateItem = async (req, res) => {
   }
 };
 
+const mongoose = require('mongoose');
+
 exports.validateCart = async (req, res) => {
   try {
+    console.log('🔥 VALIDATE API HIT');
+    console.log('BODY:', req.body);
+
     const { items } = req.body;
 
     for (const cartItem of items) {
+      console.log('--- ITEM CHECK ---');
       console.log('CART ITEM:', cartItem);
-      console.log('TRYING ID:', cartItem.id);
 
-      const dbItem = await Item.findById(cartItem.id || cartItem._id);
+      const itemId = cartItem.id || cartItem._id;
+
+      console.log('TRYING ID:', itemId);
+
+      // ✅ Validate ObjectId
+      if (!mongoose.Types.ObjectId.isValid(itemId)) {
+        console.log('❌ INVALID OBJECT ID:', itemId);
+        return res.status(400).json({ message: 'Invalid item ID' });
+      }
+
+      const dbItem = await Item.findById(itemId);
 
       console.log('DB ITEM FOUND:', dbItem);
-            
+
       if (!dbItem) {
         return res.status(400).json({
-          message: `Item not found`,
+          message: 'Item not found',
         });
       }
 
-      const availableStock = dbItem.quantity * 1000;
+      const availableStock = Number(dbItem.quantity) * 1000;
+      const requestedQty = Number(cartItem.quantity);
 
-      console.log('Available:', availableStock);
+      console.log('AVAILABLE (g):', availableStock);
+      console.log('REQUESTED (g):', requestedQty);
 
-      if (cartItem.quantity > availableStock) {
+      if (requestedQty > availableStock) {
         return res.status(400).json({
-          message: `${dbItem.name} failed validation`,
+          message: `${dbItem.name} has only ${availableStock}g available`,
         });
       }
     }
 
-    res.json({ message: 'Stock valid' });
+    return res.json({ message: 'Stock valid' });
   } catch (error) {
     console.log('VALIDATION ERROR:', error);
-    res.status(500).json({ message: 'Validation failed' });
+    return res.status(500).json({ message: 'Validation failed' });
   }
 };
