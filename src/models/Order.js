@@ -55,6 +55,11 @@ const orderSchema = new mongoose.Schema(
     paymentId: {
     type: String,
     },
+    deliveryPartner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
   },
   { timestamps: true }
 );

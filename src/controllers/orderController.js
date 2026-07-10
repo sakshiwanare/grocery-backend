@@ -39,23 +39,37 @@ exports.getMyOrders = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch orders' });
   }
 };
-
-// GET /api/shops/:shopId/orders
 exports.getOrdersByShop = async (req, res) => {
   try {
     const { shopId } = req.params;
 
-    const orders = await Order.find({ shop: shopId })
-      .populate('user', 'name email')
-      .populate('items.item', 'name pricePerKg')
-      .sort({ createdAt: -1 });
+    const orders = await Order.find({ shop: shopId });
 
     res.json(orders);
   } catch (error) {
-    console.error('SHOP ORDERS ERROR:', error); // 👈 ADD THIS
-    res.status(500).json({ message: 'Failed to fetch shop orders' });
+    console.log(error);
+
+    res.status(500).json({
+      message: 'Failed to fetch shop orders',
+    });
   }
 };
+// GET /api/shops/:shopId/orders
+// exports.getOrdersByShop = async (req, res) => {
+//   try {
+//     const { shopId } = req.params;
+
+//     const orders = await Order.find({ shop: shopId })
+//       .populate('user', 'name email')
+//       .populate('items.item', 'name pricePerKg')
+//       .sort({ createdAt: -1 });
+
+//     res.json(orders);
+//   } catch (error) {
+//     console.error('SHOP ORDERS ERROR:', error); // 👈 ADD THIS
+//     res.status(500).json({ message: 'Failed to fetch shop orders' });
+//   }
+// };
 // POST /api/orders/:orderId/pay
 exports.confirmPayment = async (req, res) => {
   try {
@@ -293,3 +307,30 @@ exports.markDelivered = async (req, res) => {
   }
 };
 
+// GET /api/orders/available
+exports.getAvailableOrders = async (req, res) => {
+  try {
+    console.log("✅ getAvailableOrders called");
+
+    const orders = await Order.find({
+      status: 'ACCEPTED',
+      $or: [
+        { deliveryPartner: null },
+        { deliveryPartner: { $exists: false } },
+      ],
+    })
+      .populate('user', 'name')
+      .populate('shop', 'name area')
+      .sort({ createdAt: -1 });
+
+    console.log("Orders found:", orders.length);
+
+    res.json(orders);
+  } catch (error) {
+    console.error("AVAILABLE ORDERS ERROR:", error);
+
+    res.status(500).json({
+      message: 'GET_ORDER_BY_ID_ERROR',
+    });
+  }
+};
