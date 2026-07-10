@@ -313,7 +313,7 @@ exports.getAvailableOrders = async (req, res) => {
     console.log("✅ getAvailableOrders called");
 
     const orders = await Order.find({
-      status: 'ACCEPTED',
+      status: 'OUT_FOR_DELIVERY',
       $or: [
         { deliveryPartner: null },
         { deliveryPartner: { $exists: false } },
