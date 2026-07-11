@@ -16,12 +16,14 @@ const {
   markDelivered,
   getAvailableOrders,
   acceptDelivery,
+  getMyDeliveries,
 } = require('../controllers/orderController');
 
 router.post('/', authMiddleware, createOrder);
 router.get('/my', authMiddleware, getMyOrders);
 router.get('/shop/:shopId', authMiddleware, getOrdersByShop);
 router.get('/available', authMiddleware, getAvailableOrders);
+router.get('/my-deliveries',authMiddleware,getMyDeliveries);
 router.put('/:orderId/accept-delivery',authMiddleware,acceptDelivery);
 router.post('/:orderId/pay', authMiddleware, confirmPayment);
 router.get('/:orderId', authMiddleware, getOrderById);

@@ -377,3 +377,22 @@ exports.acceptDelivery = async (req, res) => {
     });
   }
 };
+// GET /api/orders/my-deliveries
+exports.getMyDeliveries = async (req, res) => {
+  try {
+    const orders = await Order.find({
+      deliveryPartner: req.user.id,
+    })
+      .populate('user', 'name')
+      .populate('shop', 'name area')
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (error) {
+    console.error('MY DELIVERIES ERROR:', error);
+
+    res.status(500).json({
+      message: 'Failed to fetch my deliveries',
+    });
+  }
+};
