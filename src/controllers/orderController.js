@@ -111,9 +111,10 @@ exports.getOrderById = async (req, res) => {
     const { orderId } = req.params;
 
     const order = await Order.findById(orderId)
-      .populate('shop', 'name area')
-      .populate('items.item', 'name pricePerKg')
-      .populate('user', 'name email');
+    .populate('shop', 'name area')
+    .populate('items.item', 'name pricePerKg')
+    .populate('user', 'name email')
+    .populate('deliveryPartner', 'name mobile');
 
       console.log('ORDER USER FIELD:', order.user);
 
