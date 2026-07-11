@@ -121,6 +121,8 @@ exports.getOrderById = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
+    
+    console.log('DELIVERY PARTNER:', order.deliveryPartner);
 
     res.json(order);
   } catch (error) {
