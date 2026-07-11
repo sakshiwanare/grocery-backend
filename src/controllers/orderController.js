@@ -392,6 +392,7 @@ exports.getMyDeliveries = async (req, res) => {
   try {
     const orders = await Order.find({
       deliveryPartner: req.user.id,
+      status: 'OUT_FOR_DELIVERY',
     })
       .populate('user', 'name')
       .populate('shop', 'name area')
