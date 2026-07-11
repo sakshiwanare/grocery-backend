@@ -7,6 +7,7 @@ const {
   createOrder,
   getMyOrders,
   getOrdersByShop,
+  getCompletedOrdersByShop,
   confirmPayment,
   getOrderById,
   cancelOrder,
@@ -22,6 +23,7 @@ const {
 router.post('/', authMiddleware, createOrder);
 router.get('/my', authMiddleware, getMyOrders);
 router.get('/shop/:shopId', authMiddleware, getOrdersByShop);
+router.get('/shop/:shopId/completed',authMiddleware,getCompletedOrdersByShop);
 router.get('/available', authMiddleware, getAvailableOrders);
 router.get('/my-deliveries',authMiddleware,getMyDeliveries);
 router.put('/:orderId/accept-delivery',authMiddleware,acceptDelivery);

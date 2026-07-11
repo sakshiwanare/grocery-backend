@@ -43,7 +43,15 @@ exports.getOrdersByShop = async (req, res) => {
   try {
     const { shopId } = req.params;
 
-    const orders = await Order.find({ shop: shopId });
+    const orders = await Order.find({
+      shop: shopId,
+      status: {
+        $in: ['PENDING', 'ACCEPTED', 'OUT_FOR_DELIVERY'],
+      },
+    })
+    .populate('user', 'name email')
+    .populate('items.item', 'name pricePerKg')
+    .sort({ createdAt: -1 });
 
     res.json(orders);
   } catch (error) {
@@ -404,6 +412,30 @@ exports.getMyDeliveries = async (req, res) => {
 
     res.status(500).json({
       message: 'Failed to fetch my deliveries',
+    });
+  }
+};
+// GET /api/orders/shop/:shopId/completed
+exports.getCompletedOrdersByShop = async (req, res) => {
+  try {
+    const { shopId } = req.params;
+
+    const orders = await Order.find({
+      shop: shopId,
+      status: {
+        $in: ['DELIVERED', 'CANCELLED'],
+      },
+    })
+      .populate('user', 'name email')
+      .populate('items.item', 'name pricePerKg')
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (error) {
+    console.error('COMPLETED ORDERS ERROR:', error);
+
+    res.status(500).json({
+      message: 'Failed to fetch completed orders',
     });
   }
 };
