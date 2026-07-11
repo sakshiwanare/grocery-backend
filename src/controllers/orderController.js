@@ -298,6 +298,16 @@ exports.markDelivered = async (req, res) => {
       });
     }
 
+    // Only the assigned delivery partner can mark it delivered
+    if (
+      !order.deliveryPartner ||
+      order.deliveryPartner.toString() !== req.user.id
+    ) {
+      return res.status(403).json({
+        message: 'You are not assigned to this delivery',
+      });
+    }
+
     order.status = 'DELIVERED';
     await order.save();
 
