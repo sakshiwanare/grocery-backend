@@ -15,12 +15,14 @@ const {
   markOutForDelivery,
   markDelivered,
   getAvailableOrders,
+  acceptDelivery,
 } = require('../controllers/orderController');
 
 router.post('/', authMiddleware, createOrder);
 router.get('/my', authMiddleware, getMyOrders);
 router.get('/shop/:shopId', authMiddleware, getOrdersByShop);
 router.get('/available', authMiddleware, getAvailableOrders);
+router.put('/:orderId/accept-delivery',authMiddleware,acceptDelivery);
 router.post('/:orderId/pay', authMiddleware, confirmPayment);
 router.get('/:orderId', authMiddleware, getOrderById);
 router.put('/:orderId/cancel', authMiddleware, cancelOrder);
@@ -28,6 +30,7 @@ router.put('/:orderId/accept', authMiddleware, acceptOrder);
 router.put('/:orderId/reject', authMiddleware, rejectOrder);
 router.put('/:orderId/out-for-delivery', authMiddleware, markOutForDelivery);
 router.put('/:orderId/delivered', authMiddleware, markDelivered);
+
 
 
 module.exports = router;

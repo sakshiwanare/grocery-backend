@@ -334,3 +334,46 @@ exports.getAvailableOrders = async (req, res) => {
     });
   }
 };
+// PUT /api/orders/:orderId/accept-delivery
+exports.acceptDelivery = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found',
+      });
+    }
+
+    // Order must be ready for delivery
+    if (order.status !== 'OUT_FOR_DELIVERY') {
+      return res.status(400).json({
+        message: 'Order is not ready for delivery',
+      });
+    }
+
+    // Prevent another delivery partner from accepting it
+    if (order.deliveryPartner) {
+      return res.status(400).json({
+        message: 'Order already assigned',
+      });
+    }
+
+    // Assign logged-in delivery partner
+    order.deliveryPartner = req.user.id;
+
+    await order.save();
+
+    res.json({
+      message: 'Delivery accepted successfully',
+      order,
+    });
+
+  } catch (error) {
+    console.error('ACCEPT DELIVERY ERROR:', error);
+
+    res.status(500).json({
+      message: 'Failed to accept delivery',
+    });
+  }
+};
