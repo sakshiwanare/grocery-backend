@@ -18,6 +18,7 @@ const {
   getAvailableOrders,
   acceptDelivery,
   getMyDeliveries,
+  getDeliveredOrders,
 } = require('../controllers/orderController');
 
 router.post('/', authMiddleware, createOrder);
@@ -26,6 +27,7 @@ router.get('/shop/:shopId', authMiddleware, getOrdersByShop);
 router.get('/shop/:shopId/completed',authMiddleware,getCompletedOrdersByShop);
 router.get('/available', authMiddleware, getAvailableOrders);
 router.get('/my-deliveries',authMiddleware,getMyDeliveries);
+router.get('/delivered-orders',authMiddleware,getDeliveredOrders);
 router.put('/:orderId/accept-delivery',authMiddleware,acceptDelivery);
 router.post('/:orderId/pay', authMiddleware, confirmPayment);
 router.get('/:orderId', authMiddleware, getOrderById);

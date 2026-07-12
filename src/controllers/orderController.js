@@ -418,6 +418,26 @@ exports.getMyDeliveries = async (req, res) => {
     });
   }
 };
+
+exports.getDeliveredOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({
+      deliveryPartner: req.user.id,
+      status: 'DELIVERED',
+    })
+      .populate('user', 'name')
+      .populate('shop', 'name area')
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (error) {
+    console.error('DELIVERED ORDERS ERROR:', error);
+
+    res.status(500).json({
+      message: 'Failed to fetch delivered orders',
+    });
+  }
+};
 // GET /api/orders/shop/:shopId/completed
 exports.getCompletedOrdersByShop = async (req, res) => {
   try {
