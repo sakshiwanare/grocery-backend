@@ -60,6 +60,34 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       default: null,
     },
+    deliveryRating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: null,
+    },
+    shopRating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: null,
+    },
+    deliveryComment: {
+      type: String,
+      default: '',
+    },
+    shopComment: {
+      type: String,
+      default: '',
+    },
+    deliveryRated: {
+      type: Boolean,
+      default: false,
+    },
+    shopRated: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
